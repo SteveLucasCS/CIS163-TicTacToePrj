@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package package1;
 
@@ -10,7 +10,7 @@ package package1;
 public class SuperTicTacToeGame {
 
 	/**
-	 * 
+	 *
 	 */
 	public SuperTicTacToeGame() {
 		// TODO Auto-generated constructor stub

@@ -17,18 +17,18 @@ public class SuperTicTacToePanel extends JPanel{
 	 * the cells on the game board, making up what the user
 	 * sees and interacts with
 	 */
-	private JButton[][] board;   
-	
+	private JButton[][] board;
+
 	private CellStatus iCell;
-	
+
 	/**
 	 * Quits the game, closing the GUI and ending the game.
 	 */
 	private JButton quitButton;
-	
+
 	/**
-	 * A game object that handles the back end tasks of 
-	 * scoring and math methods. 
+	 * A game object that handles the back end tasks of
+	 * scoring and math methods.
 	 */
 	private SuperTicTacToeGame game;
 
@@ -36,35 +36,35 @@ public class SuperTicTacToePanel extends JPanel{
 	 * Icon for the 'X' marker in a cell
 	 */
 	private ImageIcon xIcon;
-	
+
 	/**
 	 * Icon for the 'O' marker in a cell
 	 */
-	private ImageIcon oIcon;	
-	
+	private ImageIcon oIcon;
+
 	/**
 	 * Icon representing an empty cell
 	 */
 	private ImageIcon emptyIcon;
-	
+
 	/**
 	 * ActionListener for the main panel
 	 */
 	private ButtonListener listener;
-	
+
 	public SuperTicTacToePanel() {
 		//initialize xIcon with image file path
 		xIcon = new ImageIcon("x.jpg");
-		
+
 		//initialize oIcon with image file path
 		oIcon = new ImageIcon("o.jpg");
-		
+
 		//initialize emptyIcon with image file path
 		emptyIcon = new ImageIcon("empty.jpg");
-		
+
 		//initialize a game using the default constructor
 		game = new SuperTicTacToeGame();
-		
+
 		for (int row = 0; row < BD_SIZE; row++) {
 			for (int col = 0; col < BD_SIZE; col++) {
 				board[row][col] = new JButton("", emptyIcon);
@@ -73,21 +73,21 @@ public class SuperTicTacToePanel extends JPanel{
 			}
 		}
 	}
-	
+
 //	private void displayBoard() {
-//		for (int row = 0; row < BD_SIZE; row++) 
+//		for (int row = 0; row < BD_SIZE; row++)
 //			for (int col = 0; col < BD_SIZE; col++) {
 //				iCell = game.getCell(row,col);
 //				// TODO: ImageIcon icon = icon for iCell
 //				board[row][col].setIcon(icon);
 //			}
 //	}
-	
+
 	private class ButtonListener implements ActionListener {
 		public void actionPerformed (ActionEvent event) {
-			
+
 		}
 	}
-	
+
 
 }
