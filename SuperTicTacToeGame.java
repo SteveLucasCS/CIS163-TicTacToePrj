@@ -20,35 +20,35 @@ public class SuperTicTacToeGame {
 	 * The X and Y dimension of the game board. 3 is default.
 	 */
 	protected static int BDSIZE = 3;
-	
+
 	/**
-	 * Number of cells in a row needed to to win. 3 is default.
+	 * Number of cells in connection needed to to win. 3 is default.
 	 */
-	
+
 	protected static int WINCON = 3;
 	/**
 	 * Status of each cell (as a 2D array) on the game board
 	 */
 	private CellStatus[][] board;
-	
+
 	/**
 	 * Status of the game (X_WON, O_WON, CATS, or IN_PROGRESS)
 	 */
 	private GameStatus status;
 
-	
+
 	/******************************************************************
 	 * Creates a game board of the size specified by BDSIZE
 	 *****************************************************************/
 	public SuperTicTacToeGame() {
 		status = GameStatus.IN_PROGRESS;
 		board = new CellStatus[BDSIZE][BDSIZE];
-		
+
 		for (int row = 0; row < BDSIZE; row++)
 			for (int col = 0; col < BDSIZE; col++)
 				board[row][col] = CellStatus.EMPTY;
 	}
-	
+
 	/******************************************************************
 	 * Called when the user selects a cell in the GUI. Marks the cell
 	 * as the user's token (X or O).
@@ -58,19 +58,19 @@ public class SuperTicTacToeGame {
 	public void select (int row, int col) {
 		//TODO mark cell based on which player clicks the button
 	}
-	
+
 	/******************************************************************
 	 * Called by the GUI Panel class to reset the board to a new game.
 	 *****************************************************************/
 	public void reset() {
 		status = GameStatus.IN_PROGRESS;
 		board = new CellStatus[BDSIZE][BDSIZE];
-		
+
 		for (int row = 0; row < BDSIZE; row++)
 			for (int col = 0; col < BDSIZE; col++)
 				board[row][col] = CellStatus.EMPTY;
 	}
-	
+
 	/******************************************************************
 	 * Checks if the game has ended, and if so who won, or that the
 	 * game is still in progress. 
@@ -80,71 +80,79 @@ public class SuperTicTacToeGame {
 	 * 		   GameStatus.IN_Progress if the game is still in progress.
 	 *****************************************************************/
 	public GameStatus getGameStatus() {
-		
-		//Tracks the number of empty cells on the board.
-		//If this is 0 after the for loop the board is full; game over.
+		//number of empty cells on the game board.
 		int numEmpty = 0;
-		
-		//Iterates through the entire game board, checking the status
-		//of each cell.
 		for (int row = 0; row < BDSIZE; row++)
 			for (int col = 0; col < BDSIZE; col++) {
-				
-				if (getCell(row,col) == CellStatus.EMPTY)
+
+				//Cell is not empty and is valid, check for connection.
+				if ((getCell(row,col) == CellStatus.X)
+						|| (getCell(row,col) == CellStatus.O))
+				{
+					//Column of the cell being checked for connection.
+					int tempCol = col;
+					//number of iterations through column while loop
+					int a = 1;
+					//Checks all columns for connections of WINCON length
+					while (getCell(row,tempCol) == getCell(row,col)
+							&& a <= WINCON) {
+						//Reached end of board, wrap to beginning.
+						if (tempCol == BDSIZE-1)
+							tempCol = 0;
+						//Bottom not reached, move down one column
+						else
+							tempCol++;
+						//win condition achieved, return winner.
+						if (a == WINCON) {
+							if (getCell(0,0) == CellStatus.X)
+								return GameStatus.X_WON;
+							else if (getCell(0,0) == CellStatus.O)
+								return GameStatus.O_WON;
+						}
+						a++;
+					}
+
+					//Row of the cell being checked for connection.
+					int tempRow = row;
+					//number of iterations through row while loop.
+					int b = 1;
+					while (getCell(tempRow,col) == getCell(row,col)
+							&& b <= WINCON) {
+						//Reached end of board, wrap to beginning.
+						if (tempRow == BDSIZE-1)
+							tempRow= 0;
+						//Bottom not reached, move down one column
+						else
+							tempRow++;
+						//win condition achieved, return winner.
+						if (b == WINCON) {
+							if (getCell(row,col) == CellStatus.X)
+								return GameStatus.X_WON;
+							else if (getCell(row,col) == CellStatus.O)
+								return GameStatus.O_WON;
+						}
+						b++;
+					}
+				}
+
+				//Current cell is empty
+				else if (getCell(row,col) == CellStatus.EMPTY)
 					numEmpty++;
-				
-				//Check if there are enough columns below the
-				//current cell for a possible winning connection
-				if ((row + WINCON < BDSIZE) &&
-						(getCell(row,col) != CellStatus.EMPTY)) {
-					
-					//iterates through the current column while 
-					//there is a connection of matching cells until
-					//a connection of WINCON is found or the connection
-					//is broken. 
-					int a = 1;
-					while (getCell(row+a,col) == getCell(row,col)
-							&& a <= WINCON) {
-						
-						if (a == WINCON)
-							return GameStatus.X_WON;
-						a++;
-					}
-				}
-					
-				
-				
-				//Check if there are enough cells to the right of the
-				//current cell for a possible winning connection
-				if ((col + WINCON < BDSIZE) &&
-						(getCell(row,col) != CellStatus.EMPTY)) {
-					
-					//Iterates through the current row while 
-					//there is a connection of matching cells until
-					//a connection of WINCON is found or the connection
-					//is broken. 
-					int a = 1;
-					while (getCell(row,col+a) == getCell(row,col)
-							&& a <= WINCON) {
-						
-						if (a == WINCON)
-							return GameStatus.X_WON;
-						a++;
-					}
-				}
-				
+
+				//Error
+				else if (getCell(row,col) == null)
+					throw new NullPointerException();
+				else
+					throw new IllegalArgumentException();
 			}
-		
-		//All cells occupied but 3 in a row, CATS game (tie).
+		//all cells checked, no winner, no empty cells remain.
 		if (numEmpty == 0)
 			return GameStatus.CATS;
-		//Empty cells remain and there is no 3 in a row yet.
-		if (numEmpty > 0)
-			return GameStatus.IN_PROGRESS;
-		else
-			throw new IllegalArgumentException();
+		//Reaching end of method means the game is still in progress.
+		return GameStatus.IN_PROGRESS;
 	}
-	
+
+
 	/******************************************************************
 	 * Returns the CellStatus value of the cell at the given coordinate
 	 * @param int row - row of the button being checked.
@@ -154,55 +162,106 @@ public class SuperTicTacToeGame {
 	public CellStatus getCell(int row, int col) {
 		return board[row][col];
 	}
-	
-	
-	/******************************************************************
-	 * This class simulates an AI to play against the user. 
-	 * @author Steve
-	 * TODO INCOMPLETE
-	 */
-	private class AI {
-		
-		/**
-		 * Holds the coordinates for the cell.
-		 */
-		private int[] cell;
-		
-		/**
-		 * The assigned threat level of a cell. Threat is how many
-		 * more moves the player needs to complete a winning 
-		 * connection. For example, a threat of 1 means if the user
-		 * selects this cell, they will win. A threat of 2 means they
-		 * need this cell, and one more adjacent cell to win. 
-		 */
-		private int threat;
-		
-		/**
-		 * Priority is how many cells, including this one, would be
-		 * needed for a winning connection with this cell.
-		 * A priority of 1 wins the game for the AI,
-		 * A priority of 2 means this cell and an adjacent cell are
-		 * needed to form a winning connection. 
-		 */
-		private int priority;
-		
-		
-		public void aiMove() {
-			
-			//If a cell is priority 1, move there (wins game)
-			//If a cell is threat 1, move there (blocks connection)
-			
-		}
-		
-		public void assignThreats() {
-			
-		}
-		
-		public void assignPriority() {
-		/**************************************************************
-		 * The Threat class holds the values for a t
-		 * @author Steve
-		 */
-		}
-	}
+
+	//		/******************************************************************
+	//		 * Calling this gets the coordinates the AI wants to place an O.
+	//		 * @return int[] moveTo - The coordinates the AI will change to O
+	//		 *****************************************************************/
+	//		private int[] aiMove() {
+	//			//Coordinates the AI will place an O. 
+	//			int[] moveTo = {-1,-1};
+	//			AICell cell = new AICell();
+	//
+	//			return moveTo;
+	//		}
+	//
+	//		/******************************************************************
+	//		 * This class simulates an AI to play against the user. 
+	//		 * An object of this type represents a cell on the game board.
+	//		 * A cell's coordinates are saved and fields are assigned to assist
+	//		 * in the AI's logic.
+	//		 * @author Steve
+	//		 * TODO INCOMPLETE
+	//		 *****************************************************************/
+	//		private class AICell {
+	//
+	//			/**
+	//			 * Holds the coordinates for the cell.
+	//			 */
+	//			private int[] coord;
+	//
+	//			/**
+	//			 * The assigned threat level of a cell. Threat is how many
+	//			 * more moves the player needs to complete a winning 
+	//			 * connection. For example, a threat of 1 means if the user
+	//			 * selects this cell, they will win. A threat of 2 means they
+	//			 * need this cell, and one more adjacent cell to win. 
+	//			 */
+	//			private int threat;
+	//
+	//			/**
+	//			 * Priority is how many cells, including this one, would be
+	//			 * needed for a winning connection with this cell.
+	//			 * A priority of 1 wins the game for the AI,
+	//			 * A priority of 2 means this cell and an adjacent cell are
+	//			 * needed to form a winning connection. 
+	//			 */
+	//			private int priority;
+	//
+	//
+	//			/**************************************************************
+	//			 * Constructor with No Parameters. Everything set to 0
+	//			 *************************************************************/
+	//			private AICell() {
+	//
+	//			}
+	//
+	//			/**************************************************************
+	//			 * Constructor with 4 Parameters.
+	//			 * @param int row, int col, int threat, int priority
+	//			 *************************************************************/
+	//			private AICell(int row, int col, int threat, int priority) {
+	//
+	//			}
+	//
+	//
+	//			public void analyzeBoard() {
+	//
+	//				for (int row = 0; row < BDSIZE; row++)
+	//					for (int col = 0; col < BDSIZE; col++) {
+	//
+	//						//Check if there are enough columns below the
+	//						//current cell for a possible winning connection
+	//						if ((row + WINCON < BDSIZE) &&
+	//								(getCell(row,col) != CellStatus.EMPTY)) {
+	//
+	//
+	//							while (getCell(row+a,col) == getCell(row,col)
+	//						}
+	//					}
+	//
+	//
+	//
+	//				//Check if there are enough cells to the right of the
+	//				//current cell for a possible winning connection
+	//				if ((col + WINCON < BDSIZE) &&
+	//						(getCell(row,col) != CellStatus.EMPTY)) {
+	//
+	//					//Iterates through the current row while 
+	//					//there is a connection of matching cells until
+	//					//a connection of WINCON is found or the connection
+	//					//is broken. 
+	//					int a = 1;
+	//					while (getCell(row,col+a) == getCell(row,col)
+	//							&& a <= WINCON) {
+	//
+	//						if (a == WINCON)
+	//							return GameStatus.X_WON;
+	//						a++;
+	//					}
+	//				}
+	//
+	//			}
+	//		}
+	//	}
 }
