@@ -15,6 +15,7 @@ public class SuperTicTacToe {
 	 * The JPanel that is the main GUI of the game.
 	 */
 	private SuperTicTacToePanel gamePanel;
+	
 	public SuperTicTacToe() {
 		// TODO Auto-generated constructor stub
 	}
