@@ -56,7 +56,12 @@ public class SuperTicTacToeGame {
 	 * 		  int col - the column of the button the player clicked.
 	 *****************************************************************/
 	public void select (int row, int col) {
-		//TODO mark cell based on which player clicks the button
+		if (row < 0 || row >= BDSIZE || col < 0 || col >= BDSIZE)
+			throw new IllegalArgumentException();
+		if (getCell(row, col) != CellStatus.EMPTY)
+			throw new IllegalArgumentException();
+		//sets the selected cell to X.
+		board[row][col] = CellStatus.X;
 	}
 
 	/******************************************************************
@@ -160,6 +165,32 @@ public class SuperTicTacToeGame {
 	 * @return CellStatus (X, O, or EMPTY)
 	 *****************************************************************/
 	public CellStatus getCell(int row, int col) {
+		if (row < 0 || row > BDSIZE-1 || col < 0 || col > BDSIZE)
+			throw new IllegalArgumentException();
 		return board[row][col];
+	}
+	
+	/******************************************************************
+	 * Sets the dimensions of the game board. 
+	 * @param int dim is the x and y dimension that the board will have
+	 *****************************************************************/
+	public static void setBDSIZE(int dim) {
+		if (dim < 2 || dim > 9) {
+			BDSIZE = 3;
+			throw new IllegalArgumentException();
+		}
+		BDSIZE = dim;
+	}
+	
+	/******************************************************************
+	 * Sets the number of connected cells required to win the game.
+	 * @param int win is the number of connections to win. 
+	 *****************************************************************/
+	public static void setWINCON(int win) {
+		if (win < 2 || win > BDSIZE) {
+			WINCON = 3;
+			throw new IllegalArgumentException();
+		}
+		WINCON = win;
 	}
 }
