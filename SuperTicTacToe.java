@@ -2,7 +2,7 @@
  * @author David Whynot, Steve Lucas
  * Version: 1.0.0 June 4, 2018
  */
-// package package1;
+package package1;
 
 import javax.swing.*;
 
