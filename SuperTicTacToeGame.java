@@ -1,7 +1,7 @@
 /**
  *
  */
-package package1;
+// package package1;
 
 /**
  * @author steve
@@ -204,11 +204,11 @@ public class SuperTicTacToeGame {
 		}
 		WINCON = win;
 	}
-	
+
 	/******************************************************************
 	 * Logic for the AI. Selects the cell the AI wants to move to as O.
 	 * Call the getGameStatus() method before this method each time.
-	 * This method modifies the board, placing an O where the AI wants 
+	 * This method modifies the board, placing an O where the AI wants
 	 * to move, if possible.
 	 * @return AIStatus MOVED if the AI successfully moved, ERROR if
 	 * the AI could not make a move for any reason.
@@ -256,18 +256,18 @@ public class SuperTicTacToeGame {
 					while (getCell(row,tempCol) == getCell(row,col)
 							&& a <= WINCON) {
 						a++;
-						
+
 						//Reached end of board, wrap to beginning.
 						if (tempCol == BDSIZE-1)
 							tempCol = 0;
 						//Bottom not reached, move down one column
 						else
 							tempCol++;
-						
+
 						//1 away from winning
 						if (a == WINCON-1) {
-							//if the next cell on the board is empty, 
-							if (getCell(row,tempCol) == 
+							//if the next cell on the board is empty,
+							if (getCell(row,tempCol) ==
 									CellStatus.EMPTY) {
 								board[row][tempCol] = CellStatus.O;
 								return AIStatus.MOVED;
@@ -279,13 +279,13 @@ public class SuperTicTacToeGame {
 								return AIStatus.MOVED;
 							}
 						}
-						
+
 					} //end of columns while loop
-					
+
 					//Most horizontal connections either player has.
 					if (a > aMax)
 						aMax = a;
-					
+
 					//Vertical connections checked
 					//Row of the cell being checked for connection.
 					int tempRow = row;
@@ -300,11 +300,11 @@ public class SuperTicTacToeGame {
 						//Bottom not reached, move down one column
 						else
 							tempRow++;
-						
+
 						//1 away from winning
 						if (b == WINCON-1) {
-							//if the next cell on the board is empty, 
-							if (checkMove(tempRow, col) == 
+							//if the next cell on the board is empty,
+							if (checkMove(tempRow, col) ==
 									AIStatus.VALID) {
 								board[tempRow][col] = CellStatus.O;
 								return AIStatus.MOVED;
@@ -317,7 +317,7 @@ public class SuperTicTacToeGame {
 							}
 						}
 					} //end of rows while loop
-					
+
 					//Most vertical connections a player has.
 					if (b > bMax)
 						bMax = b;
@@ -376,9 +376,9 @@ public class SuperTicTacToeGame {
 						}
 					}
 					//Largest friend/foe connections established,
-					//begin logic/decision making. 
-					
-					//If the friendly connection is larger, 
+					//begin logic/decision making.
+
+					//If the friendly connection is larger,
 					if (friendMaxStart[0] >= foeMaxStart[0]) {
 						//check if it's horizontal or vertical
 						if (friendMaxStart[3] == VERTICAL) {
@@ -403,7 +403,7 @@ public class SuperTicTacToeGame {
 						if (friendMaxStart[3] == HORIZONTAL) {
 							//check the next cell in the row
 							if (checkMove(friendMaxEnd[0],
-									friendMaxEnd[1] + 1) 
+									friendMaxEnd[1] + 1)
 									== AIStatus.VALID) {
 								//Sets AI target to the cell right of
 								//the last cell in the connection.
@@ -444,7 +444,7 @@ public class SuperTicTacToeGame {
 						if (foeMaxStart[3] == HORIZONTAL) {
 							//check the next cell in the row
 							if (checkMove(foeMaxEnd[0],
-									foeMaxEnd[1] + 1) 
+									foeMaxEnd[1] + 1)
 									== AIStatus.VALID) {
 								//Sets AI target to the cell right of
 								//the last cell in the connection.
@@ -471,12 +471,12 @@ public class SuperTicTacToeGame {
 		//Method ended without AI finding any available moves.
 		return AIStatus.ERROR;
 	} //end oF method
-	
+
 	/******************************************************************
-	 * 
+	 *
 	 * @param row - row of the cell on the board.
 	 * @param col - column of the cell on the board.
-	 * @return VALID - Cell exists and is empty. OCCUPIED cell is 
+	 * @return VALID - Cell exists and is empty. OCCUPIED cell is
 	 * occupied already. INVALID cell is not on the game board.
 	 *****************************************************************/
 	private AIStatus checkMove(int row, int col) {

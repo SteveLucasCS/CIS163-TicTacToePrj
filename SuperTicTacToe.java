@@ -1,8 +1,10 @@
 /**
- * @author Steve Lucas
- * Version: 0.0.0 May 23, 2018
+ * @author David Whynot, Steve Lucas
+ * Version: 1.0.0 June 4, 2018
  */
-package package1;
+// package package1;
+
+import javax.swing.*;
 
 /**********************************************************************
  * Creates a GUI for Super Tic Tac Toe by creating a JPanel object
@@ -11,13 +13,14 @@ package package1;
  *********************************************************************/
 public class SuperTicTacToe {
 
-	/**
-	 * The JPanel that is the main GUI of the game.
-	 */
-	private SuperTicTacToePanel gamePanel;
-	
-	public SuperTicTacToe() {
-		// TODO Auto-generated constructor stub
+	public static void main(String[] args) {
+		JFrame frame = new JFrame("Super TicTacToe");
+		SuperTicTacToePanel gamePanel = new SuperTicTacToePanel();
+		frame.getContentPane().add(gamePanel);
+
+		frame.setSize(1000, 500);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
-//
+
 }
