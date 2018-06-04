@@ -7,8 +7,22 @@ import static org.junit.Assert.*;
 
 public class TestSuperTicTacToeGame {
 	
-	//private SuperTicTacToeGame game;
-	
+	public static void printBoard(SuperTicTacToeGame game) {
+		String c = "*";
+		for (int row = 0; row < SuperTicTacToeGame.BDSIZE; row++) {
+			for (int col = 0; col < SuperTicTacToeGame.BDSIZE; col++) {
+				if (game.getCell(row,col) == CellStatus.X)
+					c = "X";
+				else if (game.getCell(row, col) == CellStatus.O)
+					c = "O";
+				else if (game.getCell(row, col) == CellStatus.EMPTY)
+					c = "*";
+				System.out.print(c + " ");
+			} //end of inner for loop
+			System.out.print("\n");
+		}
+		System.out.print("\n");
+	}
 	/******************************************************************
 	 * setBDSIZE testing STARTS
 	 *****************************************************************/
@@ -252,6 +266,42 @@ public class TestSuperTicTacToeGame {
 		
 	}
 	
+	@Test (expected = IllegalArgumentException.class)
+	public void selectInvalid1() {
+		SuperTicTacToeGame game = new SuperTicTacToeGame();
+		game.select(10, 0);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void selectInvalid2() {
+		SuperTicTacToeGame game = new SuperTicTacToeGame();
+		game.select(5,20);
+	}
+	@Test (expected = IllegalArgumentException.class)
+	public void selectInvalid3() {
+		SuperTicTacToeGame game = new SuperTicTacToeGame();
+		game.select(-3,1);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void selectInvalid4() {
+		SuperTicTacToeGame game = new SuperTicTacToeGame();
+		game.select(2,-2);
+	}
+	
+	@Test (expected = IllegalArgumentException.class)
+	public void selectInvalid5() {
+		SuperTicTacToeGame game = new SuperTicTacToeGame();
+		game.select(1, 1);
+		game.select(1, 1);
+	}
+	
+	@Test (expected = NullPointerException.class)
+	public void selectNull() {
+		SuperTicTacToeGame game = null;
+		game.select(0,0);
+	}
+	
 	@Test
 	public void testGame() {
 		SuperTicTacToeGame.setBDSIZE(5);
@@ -259,16 +309,12 @@ public class TestSuperTicTacToeGame {
 		SuperTicTacToeGame game = new SuperTicTacToeGame();
 		assertEquals(game.getGameStatus(),GameStatus.IN_PROGRESS);
 		assertEquals(game.getCell(0, 0),CellStatus.EMPTY);
-		game.select(1,1);
-		assertEquals(game.getCell(1,1),CellStatus.X);
-		game.select(1,2);
-		assertEquals(game.getCell(1, 2),CellStatus.X);
-		assertEquals(game.getCell(0, 0),CellStatus.EMPTY);
-		assertEquals(game.getGameStatus(),GameStatus.IN_PROGRESS);
-		game.select(1,3);
-		game.select(1,4);
-		game.select(1,0);
-		assertEquals(GameStatus.X_WON,game.getGameStatus());	
+		game.select(1, 0);
+		game.select(1, 1);
+		game.select(1, 2);
+		game.select(1, 3);
+		game.select(1, 4);
+		assertEquals(GameStatus.X_WON,game.getGameStatus());
 	}
 	
 	@Test
@@ -293,4 +339,51 @@ public class TestSuperTicTacToeGame {
 		assertEquals(game.getGameStatus(),GameStatus.X_WON);
 	}
 	
+	/******************************************************************
+	 * AI testing STARTS
+	 *****************************************************************/
+//	@Test
+//	public void testAIFirstMove() {
+//		SuperTicTacToeGame.setBDSIZE(3);
+//		SuperTicTacToeGame.setWINCON(3);
+//		SuperTicTacToeGame game = new SuperTicTacToeGame();
+//		assertEquals(AIStatus.MOVED,game.aiMove());
+//		if (game.checkMove(1,1) == AIStatus.VALID)
+//			game.select(1,1);
+//		printBoard(game);
+//		assertEquals(AIStatus.MOVED,game.aiMove());
+//		printBoard(game);
+//	}
+	
+	@Test
+	public void testAIsetBoard() {
+		SuperTicTacToeGame.setBDSIZE(9);
+		SuperTicTacToeGame.setWINCON(9);
+		SuperTicTacToeGame game = new SuperTicTacToeGame();
+		game.select(1, 1);
+		game.select(1, 2);
+		printBoard(game);
+		assertEquals(AIStatus.MOVED,game.aiMove());
+		printBoard(game);
+		game.select(0,2);
+		game.aiMove();
+		printBoard(game);
+		game.aiMove();
+		printBoard(game);
+		game.aiMove();
+		printBoard(game);
+		game.select(0,0);
+		printBoard(game);
+		game.aiMove();
+		printBoard(game);
+		assertEquals(AIStatus.MOVED,game.aiMove());
+		game.aiMove();
+		printBoard(game);
+		game.select(5,3);
+		assertEquals(AIStatus.MOVED,game.aiMove());
+		printBoard(game);
+		game.aiMove();
+		printBoard(game);
+		
+	}
 }
