@@ -18,7 +18,7 @@ public class SuperTicTacToe {
 		SuperTicTacToePanel gamePanel = new SuperTicTacToePanel();
 		frame.getContentPane().add(gamePanel);
 
-		frame.setSize(1000, 500);
+		frame.setSize(1000, 1000);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}

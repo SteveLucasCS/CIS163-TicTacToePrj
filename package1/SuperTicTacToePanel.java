@@ -24,7 +24,6 @@ public class SuperTicTacToePanel extends JPanel{
 
 
 	// labels
-	private JLabel title_lbl;
 	private JLabel status_lbl;
 	private JLabel xWins_lbl;
 	private JLabel oWins_lbl;
@@ -76,7 +75,7 @@ public class SuperTicTacToePanel extends JPanel{
 	 */
 	private JButton quit_btn;
 	private JButton undo_btn;
-	private JButton newGamebtn;
+	private JButton newGame_btn;
 
 
 
@@ -86,6 +85,7 @@ public class SuperTicTacToePanel extends JPanel{
 	private JPanel btn_pnl;
 	private JPanel lbl_pnl;
 	private JPanel newGame_pnl;
+	private JPanel wins_pnl;
 
 
 
@@ -123,13 +123,12 @@ public class SuperTicTacToePanel extends JPanel{
 		cats = 0;
 
 		// init labels
-		title_lbl = new JLabel("SuperTicTacToe");
 		status_lbl = new JLabel("Game In Progress");
-		xWins_lbl = new JLabel("X Wins: ");
-		oWins_lbl = new JLabel("O Wins: ");
-		cats_lbl = new JLabel("Cats: ");
-		connections_lbl = new JLabel("Number of Connections for Win:");
-		bdSize_lbl = new JLabel("Size of Board:");
+		xWins_lbl = new JLabel("X Wins: 0");
+		oWins_lbl = new JLabel("O Wins: 0");
+		cats_lbl = new JLabel("Cats: 0");
+		connections_lbl = new JLabel("Number of Connections for Win: 3");
+		bdSize_lbl = new JLabel("Size of Board: 3");
 
 		// init ui components
 		connections_box = new JComboBox(BD_SIZES);
@@ -140,10 +139,16 @@ public class SuperTicTacToePanel extends JPanel{
 		// init buttons
 		reset_btn = new JButton("Reset");
 		undo_btn = new JButton("Undo");
+		quit_btn = new JButton("Quit");
+		newGame_btn = new JButton("New Game");
 
 		// init panels
 		base_pnl = new JPanel();
 		game_pnl = new JPanel();
+		btn_pnl = new JPanel();
+		lbl_pnl = new JPanel();
+		newGame_pnl = new JPanel();
+		wins_pnl = new JPanel();
 
 		// init game button listener
 		listener = new ButtonListener();
@@ -158,15 +163,39 @@ public class SuperTicTacToePanel extends JPanel{
 
 
 		// add components to frame
-		add(title_lbl);
+		setLayout(new GridLayout(2,1));
+		add(game_pnl);
 		add(base_pnl);
-		base_pnl.add(reset_btn);
-		base_pnl.add(game_pnl);
+		base_pnl.setLayout(new GridLayout(1,3));
+		base_pnl.add(btn_pnl);
+		base_pnl.add(lbl_pnl);
+		lbl_pnl.setLayout(new BorderLayout());
+		base_pnl.add(newGame_pnl);
+
+		btn_pnl.add(reset_btn);
+		btn_pnl.add(undo_btn);
+		btn_pnl.add(quit_btn);
+
+		lbl_pnl.add(status_lbl, BorderLayout.NORTH);
+		lbl_pnl.add(wins_pnl, BorderLayout.SOUTH);
+		wins_pnl.add(xWins_lbl);
+		wins_pnl.add(oWins_lbl);
+		wins_pnl.add(cats_lbl);
+
+		newGame_pnl.add(connections_lbl);
+		newGame_pnl.add(connections_box);
+		newGame_pnl.add(bdSize_lbl);
+		newGame_pnl.add(bdSize_box);
+		newGame_pnl.add(goFirst_tgl);
+		newGame_pnl.add(newGame_btn);
+
+
 
 
 		// layout
-		setLayout(new FlowLayout());
-		base_pnl.setLayout(new FlowLayout());
+		btn_pnl.setLayout(new FlowLayout());
+		lbl_pnl.setLayout(new FlowLayout());
+		newGame_pnl.setLayout(new FlowLayout());
 		game_pnl.setLayout(new GridLayout(game.getBDSIZE(), game.getBDSIZE()));
 
 
@@ -179,11 +208,38 @@ public class SuperTicTacToePanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				game.reset();
 				displayBoard();
+				status_lbl.setText("Game In Progress");
 			}
 		});
 		undo_btn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				if(game.getGameStatus() == GameStatus.IN_PROGRESS) {
+					game.undo();
+					displayBoard();
+					status_lbl.setText("Game In Progress");
+				}
+			}
+		});
+		quit_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		newGame_btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				resizeBoard(Integer.parseInt(bdSize_box.getSelectedItem().toString()));
+				try {
+					game.setWINCON(Integer.parseInt(connections_box.getSelectedItem().toString()));
+				} catch(IllegalArgumentException error) {
+					JOptionPane.showMessageDialog(null, "Connections must be less than board size");
+				}
+				if(goFirst_tgl.isSelected()) {
+					game.aiMove();
+					displayBoard();
+				}
+				connections_lbl.setText("Number of Connections for Win: " + game.getWINCON());
+				bdSize_lbl.setText("Size of Board: " + game.getBDSIZE());
+				status_lbl.setText("cats");
 			}
 		});
 
@@ -213,8 +269,6 @@ public class SuperTicTacToePanel extends JPanel{
 				board[row][col].addActionListener(listener);
 				// add comoponents to frame
 				game_pnl.add(board[row][col]);
-				// System.out.println("\n\nrow: " + row + "\t col: " + col);
-				// System.out.println(board[row][col].toString());
 			}
 		}
 		game_pnl.revalidate();
@@ -222,32 +276,33 @@ public class SuperTicTacToePanel extends JPanel{
 	}
 
 	private void gameOver() {
-		System.out.println("Game Over");
 		GameStatus status = game.getGameStatus();
 		switch(status) {
 			case X_WON:
-				System.out.println("x won");
+				status_lbl.setText("x won");
 				++xWins;
+				xWins_lbl.setText("X Wins: " + xWins);
 				break;
 			case O_WON:
-				System.out.println("o won");
+				status_lbl.setText("o won");
 				++oWins;
+				oWins_lbl.setText("O Wins: " + oWins);
 				break;
 			case CATS:
-				System.out.println("cats");
+				status_lbl.setText("cats");
 				++cats;
+				cats_lbl.setText("Cats: " + cats);
 				break;
 			case IN_PROGRESS:
-				System.out.println("Error: Game is still in progress... something must have went wrong.");
+				status_lbl.setText("Error: Game is still in progress... something must have went wrong.");
 				break;
 			default:
-				System.out.println("Error: Default... something must have went wrong.");
+				status_lbl.setText("Error: Default... something must have went wrong.");
 				break;
 		}
 	}
 
 	private void resizeBoard(int sz) {
-		System.out.println("Resize Board");
 		emptyBoard();
 		game.setBDSIZE(sz);
 		game.reset();
@@ -256,7 +311,6 @@ public class SuperTicTacToePanel extends JPanel{
 	}
 
 	private void displayBoard() {
-		System.out.println("Display Board");
 		for (int row = 0; row < game.getBDSIZE(); ++row) {
 			for (int col = 0; col < game.getBDSIZE(); ++col) {
 				iCell = game.getCell(row,col);
@@ -278,7 +332,8 @@ public class SuperTicTacToePanel extends JPanel{
 
 				// STYLE BUTTONS HERE
 				board[row][col].setIcon(icon);
-				board[row][col].setPreferredSize(new Dimension(50, 50));
+				board[row][col].setMinimumSize(new Dimension(50, 50));
+				board[row][col].setMaximumSize(new Dimension(50, 50));
 			}
 		}
 		game_pnl.revalidate();
@@ -298,11 +353,9 @@ public class SuperTicTacToePanel extends JPanel{
 
 	private class ButtonListener implements ActionListener {
 		public void actionPerformed (ActionEvent e) {
-			System.out.println("ButtonListener Action Performed");
 			boolean validMove = true;
 			GameStatus status = game.getGameStatus();
 			if(status == GameStatus.IN_PROGRESS) {
-				System.out.println("Game in progress");
 				for (int row = 0; row < game.getBDSIZE(); ++row) {
 					for (int col = 0; col < game.getBDSIZE(); ++col) {
 						if (board[row][col] == e.getSource()) {
@@ -326,14 +379,12 @@ public class SuperTicTacToePanel extends JPanel{
 								gameOver();
 							}
 						} else {
-							System.out.println("AI error");
 						}
 					} else {
 						gameOver();
 					}
 				}
 			} else {
-				System.out.println("Game is already over... moves not allowed");
 			}
 			displayBoard();
 		}
