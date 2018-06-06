@@ -1,5 +1,5 @@
 /**
- * @author David Whynot, Steve Lucas
+ * @author David Whynot
  * Version: 1.0.0 June 4, 2018
  */
 package package1;
