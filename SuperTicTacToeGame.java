@@ -449,14 +449,12 @@ public class SuperTicTacToeGame {
 	
 	/******************************************************************
 	 * Undo method undoes the last player move AND last AI move.
-	 * @param int[] lastPlayerMove - Cell of the player's last move.
-	 * @param int[] lastAIMove - Cell of the AI's last move.
 	 *****************************************************************/
-	public void undo(int[] lastPlayerMove, int[] lastAIMove) {
-		int row = lastPlayerMove[0], col = lastPlayerMove[1];
+	public void undo() {
+		int row = this.lastPlayerMove[0], col = this.lastPlayerMove[1];
 		board[row][col] = CellStatus.EMPTY;
-		row = lastAIMove[0];
-		col = lastAIMove[1];
+		row = this.lastAIMove[0];
+		col = this.lastAIMove[1];
 		board[row][col] = CellStatus.EMPTY;
 	}
 } //end of class
