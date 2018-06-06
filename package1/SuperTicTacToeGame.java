@@ -24,8 +24,18 @@ public class SuperTicTacToeGame {
 	/**
 	 * Number of cells in connection needed to to win. 3 is default.
 	 */
-
 	protected static int WINCON = 3;
+	
+	/**
+	 * Last move the player made
+	 */
+	public int[] lastPlayerMove;
+	
+	/**
+	 * Last move the AI made
+	 */
+	public int[] lastAIMove;
+	
 	/**
 	 * Status of each cell (as a 2D array) on the game board
 	 */
@@ -47,7 +57,11 @@ public class SuperTicTacToeGame {
 			throw new IllegalArgumentException();
 		status = GameStatus.IN_PROGRESS;
 		board = new CellStatus[BDSIZE][BDSIZE];
-
+		lastPlayerMove[0] = 0;
+		lastPlayerMove[1] = 0;
+		lastAIMove[0] = 0;
+		lastAIMove[1] = 0;
+		
 		for (int row = 0; row < BDSIZE; row++)
 			for (int col = 0; col < BDSIZE; col++)
 				board[row][col] = CellStatus.EMPTY;
@@ -69,6 +83,8 @@ public class SuperTicTacToeGame {
 			throw new IllegalArgumentException();
 		//sets the selected cell to X.
 		board[row][col] = CellStatus.X;
+		lastPlayerMove[0] = row;
+		lastPlayerMove[1] = col;
 	}
 
 	/******************************************************************
@@ -81,6 +97,10 @@ public class SuperTicTacToeGame {
 		for (int row = 0; row < BDSIZE; row++)
 			for (int col = 0; col < BDSIZE; col++)
 				board[row][col] = CellStatus.EMPTY;
+		lastPlayerMove[0] = 0;
+		lastPlayerMove[1] = 0;
+		lastAIMove[0] = 0;
+		lastAIMove[1] = 0;
 	}
 
 	/******************************************************************
@@ -211,7 +231,7 @@ public class SuperTicTacToeGame {
 		}
 		WINCON = win;
 	}
-
+	
 	/******************************************************************
 	 * Gets the number of connections required to win the game.
 	 * @returns int WINCON - # of connections required to win.
@@ -223,7 +243,7 @@ public class SuperTicTacToeGame {
 	/******************************************************************
 	 * Logic for the AI. Selects the cell the AI wants to move to as O.
 	 * Call the getGameStatus() method before this method each time.
-	 * This method modifies the board, placing an O where the AI wants
+	 * This method modifies the board, placing an O where the AI wants 
 	 * to move, if possible.
 	 * @return AIStatus MOVED if the AI successfully moved, ERROR if
 	 * the AI could not make a move for any reason.
@@ -285,7 +305,7 @@ public class SuperTicTacToeGame {
 								if (checkAdjacentRows(tempRow,col,c,
 										getCell(row,col)))
 									return AIStatus.MOVED;
-							}
+							}		
 						} //end of rows while loop
 
 					} //end of if (cell != EMPTY) within for loops
@@ -299,11 +319,13 @@ public class SuperTicTacToeGame {
 			int ranCol = ran.nextInt(BDSIZE);
 			if (checkMove(ranRow, ranCol) == AIStatus.VALID){
 				board[ranRow][ranCol] = CellStatus.O;
+				lastAIMove[0] = ranRow;
+				lastAIMove[1] = ranCol;
 				return AIStatus.MOVED;
 			}
 			else {
 				return AIStatus.ERROR;
-			}
+			}	
 		}
 		//Method ended without AI finding any available moves.
 		return AIStatus.ERROR;
@@ -314,7 +336,7 @@ public class SuperTicTacToeGame {
 	 * by the AI.
 	 * @param row - row of the cell on the board.
 	 * @param col - column of the cell on the board.
-	 * @return VALID - Cell exists and is empty. OCCUPIED cell is
+	 * @return VALID - Cell exists and is empty. OCCUPIED cell is 
 	 * occupied already. INVALID cell is not on the game board.
 	 *****************************************************************/
 	public AIStatus checkMove(int row, int col) {
@@ -333,9 +355,9 @@ public class SuperTicTacToeGame {
 
 	/******************************************************************
 	 * Checks if there are enough available connected cells in the row
-	 * to form a winning connection.If there are, it loops through
+	 * to form a winning connection.If there are, it loops through 
 	 * adjacent cells and places an O in the nearest empty cell.
-	 * @param row
+	 * @param row 
 	 * @param col
 	 * @param c
 	 * @return true - enough connected cells to win
@@ -369,6 +391,8 @@ public class SuperTicTacToeGame {
 			if (getCell(row,col+i) == CellStatus.EMPTY) {
 				if (checkMove(row,col+i) == AIStatus.VALID) {
 					board[row][col+i] = CellStatus.O;
+					lastAIMove[0] = row;
+					lastAIMove[1] = col+i;
 					return true;
 				}
 			}
@@ -378,15 +402,15 @@ public class SuperTicTacToeGame {
 
 	/******************************************************************
 	 * Checks if there are enough available connected cells in the col
-	 * to form a winning connection.If there are, it loops through
+	 * to form a winning connection.If there are, it loops through 
 	 * adjacent cells and places an O in the nearest empty cell.
-	 * @param row
+	 * @param row 
 	 * @param col
 	 * @param c - How many more connections are needed to win
 	 * @return true - enough connected cells to win
 	 * 		   false - not enough to win
 	 *****************************************************************/
-	private boolean checkAdjacentRows(int row, int col, int c,
+	private boolean checkAdjacentRows(int row, int col, int c, 
 			CellStatus side) {
 		int x = 0;
 		int i = 0;
@@ -414,10 +438,23 @@ public class SuperTicTacToeGame {
 			if (getCell(row+i,col) == CellStatus.EMPTY) {
 				if (checkMove(row+i,col) == AIStatus.VALID) {
 					board[row+i][col] = CellStatus.O;
+					lastAIMove[0] = row+i;
+					lastAIMove[1] = col;
 					return true;
 				}
 			}
 		}
 		return false;
+	}
+	
+	/******************************************************************
+	 * Undo method undoes the last player move AND last AI move.
+	 *****************************************************************/
+	public void undo() {
+		int row = this.lastPlayerMove[0], col = this.lastPlayerMove[1];
+		board[row][col] = CellStatus.EMPTY;
+		row = this.lastAIMove[0];
+		col = this.lastAIMove[1];
+		board[row][col] = CellStatus.EMPTY;
 	}
 } //end of class
