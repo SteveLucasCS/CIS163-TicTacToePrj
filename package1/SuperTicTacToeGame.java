@@ -1,13 +1,10 @@
 /**
- *
+ * @author Steve Lucas
+ * Version: 6/11/2018
  */
 package package1;
 import java.util.ArrayList;
 import java.util.Random;
-/**
- * @author Steve Lucas
- * Version: 6/4/2018
- */
 
 /**********************************************************************
  * This class handles all game logic and back-end calculations.
@@ -32,7 +29,7 @@ public class SuperTicTacToeGame {
 	 * index 0 is move 1 row, index 1 is move 1 col,
 	 * index 2 is move 2 row, index 3 is move 2 col.
 	 */
-	public int[] lastMove = new int[4];
+	public int[] lastMove;
 
 	/**
 	 * ArrayList of the most recent move by the AI and Player
@@ -101,6 +98,7 @@ public class SuperTicTacToeGame {
 			for (int col = 0; col < BDSIZE; col++)
 				board[row][col] = CellStatus.EMPTY;
 		for (int i=0; i<4; i++)
+			lastMove[i] = 0;
 		history.clear();
 		history.add(lastMove);
 	}
@@ -314,8 +312,7 @@ public class SuperTicTacToeGame {
 				} //end of inner for loop (columns)
 		}// end outer While loop (c < WINCON)
 
-		//board is empty, move to random cell.
-
+		//No move so far, move to random cell.
 		AIStatus stat = AIStatus.INVALID;
 		while (stat != AIStatus.MOVED) {
 			Random ran = new Random();
@@ -454,15 +451,14 @@ public class SuperTicTacToeGame {
 	 * Undo method undoes the last player move AND last AI move.
 	 *****************************************************************/
 	public void undo() {
-		if(history.size() == 0) {
+		if (history.size() == 0)
 			return;
-		}
 		int[] tempArray = history.get(history.size()-1);
 		int rowX = tempArray[0], colX = tempArray[1], rowO =
 				tempArray[2], colO = tempArray[3];
 		//undo the last user and last AI moves.
-		setBoard(rowX,colX, CellStatus.EMPTY);
-		setBoard(rowO,colO, CellStatus.EMPTY);
+		board[rowX][colX] = CellStatus.EMPTY;
+		board[rowO][colO] = CellStatus.EMPTY;
 		//remove the last element of the ArrayList history
 		history.remove(history.size()-1);
 	}
