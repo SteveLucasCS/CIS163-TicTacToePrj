@@ -282,8 +282,12 @@ public class SuperTicTacToeGame {
 							if (a == WINCON-c)
 								//if enough adjacent cells are open
 								if (checkAdjacentColumns(row,tempCol,
-										c, getCell(row,col)))
+										c, getCell(row,col))) {
+									lastMove[2] = row;
+									lastMove[3] = col;
+									history.add(lastMove);
 									return AIStatus.MOVED;
+								}
 						} //end of columns while loop
 
 						//Vertical connections checked
@@ -303,8 +307,12 @@ public class SuperTicTacToeGame {
 
 							if (b == WINCON-c) {
 								if (checkAdjacentRows(tempRow,col,c,
-										getCell(row,col)))
+										getCell(row,col))) {
+									lastMove[2] = row;
+									lastMove[3] = col;
+									history.add(lastMove);
 									return AIStatus.MOVED;
+								}
 							}
 						} //end of rows while loop
 
@@ -453,6 +461,8 @@ public class SuperTicTacToeGame {
 	public void undo() {
 		if (history.size() == 0)
 			return;
+		System.out.println(history.get(history.size()-1));
+		
 		int[] tempArray = history.get(history.size()-1);
 		int rowX = tempArray[0], colX = tempArray[1], rowO =
 				tempArray[2], colO = tempArray[3];
