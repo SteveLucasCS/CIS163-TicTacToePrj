@@ -215,6 +215,8 @@ public class SuperTicTacToePanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				if(game.getGameStatus() == GameStatus.IN_PROGRESS) {
 					game.undo();
+					emptyBoard();
+					fillBoard();
 					displayBoard();
 					status_lbl.setText("Game In Progress");
 				}

@@ -32,7 +32,7 @@ public class SuperTicTacToeGame {
 	 * index 0 is move 1 row, index 1 is move 1 col,
 	 * index 2 is move 2 row, index 3 is move 2 col.
 	 */
-	public int[] lastMove = new int[999];
+	public int[] lastMove = new int[4];
 
 	/**
 	 * ArrayList of the most recent move by the AI and Player
@@ -79,7 +79,6 @@ public class SuperTicTacToeGame {
 	 * 		   IllegalArgumentException if selected cell is not empty.
 	 *****************************************************************/
 	public void select (int row, int col) {
-		// lastMove = new int[2];
 		if (row < 0 || row >= BDSIZE || col < 0 || col >= BDSIZE)
 			throw new IllegalArgumentException();
 		if (getCell(row, col) != CellStatus.EMPTY)
@@ -455,6 +454,9 @@ public class SuperTicTacToeGame {
 	 * Undo method undoes the last player move AND last AI move.
 	 *****************************************************************/
 	public void undo() {
+		if(history.size() == 0) {
+			return;
+		}
 		int[] tempArray = history.get(history.size()-1);
 		int rowX = tempArray[0], colX = tempArray[1], rowO =
 				tempArray[2], colO = tempArray[3];
