@@ -239,7 +239,7 @@ public class SuperTicTacToePanel extends JPanel{
 				}
 				connections_lbl.setText("Number of Connections for Win: " + game.getWINCON());
 				bdSize_lbl.setText("Size of Board: " + game.getBDSIZE());
-				status_lbl.setText("cats");
+				status_lbl.setText("Game In Progress");
 			}
 		});
 
@@ -334,6 +334,8 @@ public class SuperTicTacToePanel extends JPanel{
 				board[row][col].setIcon(icon);
 				board[row][col].setMinimumSize(new Dimension(50, 50));
 				board[row][col].setMaximumSize(new Dimension(50, 50));
+				// board[row][col].setWidth(new Dimension(50, 50));
+				// board[row][col].setHeight(new Dimension(50, 50));
 			}
 		}
 		game_pnl.revalidate();
@@ -379,6 +381,7 @@ public class SuperTicTacToePanel extends JPanel{
 								gameOver();
 							}
 						} else {
+							System.out.println("AI Error");
 						}
 					} else {
 						gameOver();

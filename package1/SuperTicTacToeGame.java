@@ -326,10 +326,12 @@ public class SuperTicTacToeGame {
 				return AIStatus.MOVED;
 			}
 			else {
+				System.out.println("LINE 1");
 				return AIStatus.ERROR;
 			}
 		}
 		//Method ended without AI finding any available moves.
+		System.out.println("LINE 2");
 		return AIStatus.ERROR;
 	} //end oF method
 
@@ -351,8 +353,10 @@ public class SuperTicTacToeGame {
 		else if (getCell(row,col) == CellStatus.X || getCell(row,col)
 				== CellStatus.O)
 			return AIStatus.OCCUPIED;
-		else
+		else {
+			System.out.println("LINE 3");
 			return AIStatus.ERROR;
+		}
 	}
 
 	/******************************************************************
@@ -458,5 +462,13 @@ public class SuperTicTacToeGame {
 		row = this.lastAIMove[0];
 		col = this.lastAIMove[1];
 		board[row][col] = CellStatus.EMPTY;
+	}
+
+	public CellStatus[][] getBoard() {
+		return board;
+	}
+
+	public void setBoard(CellStatus[][] b) {
+		board = b;
 	}
 } //end of class
